@@ -1,0 +1,150 @@
+﻿@model IEnumerable<CmsShop.Models.ViewModels.Pages.PageVM>
+
+@{
+    /**/
+
+    ViewBag.Title = "Strony";
+}
+
+<h2>Strony</h2>
+
+<div class="alert alert-success" style="display: none;" id="pdfdownload">
+    <p>Pobrano plik pdf.</p>
+</div>
+<div class="alert alert-success" style="display: none;" id="exceldownload">
+    <p>Pobrano plik Strony.xls</p>
+</div>
+
+<p>
+    @Html.ActionLink("Dodaj Nową Stronę", "AddPage")
+</p>
+
+@if (!Model.Any())
+{
+    <h1>Nie ma żadnej strony!</h1>
+}
+else
+{
+    <table class="table sorting" id="pages">
+        <tr class="home">
+            <th>
+                Tytuł
+            </th>
+            <th>
+                Adres
+            </th>
+            <th>
+                Pasek Boczny
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr id="id_@item.Id" class="@item.Slug">
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Slug)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.HasSidebar)
+                </td>
+                <td>
+                    @Html.ActionLink("Edytuj", "EditPage", new { id = item.Id }) |
+                    @Html.ActionLink("Szczegóły", "Details", new { id = item.Id }) |
+                    @if (item.Slug != "home")
+                    {
+                        @Html.ActionLink("Usuń", "Delete", new { id = item.Id }, new { @class = "delete" })
+                    }
+
+                </td>
+            </tr>
+        }
+
+    </table>
+
+    <div class="btn-group" style="display: inline-block;">
+
+        <div style="float: left; margin-right: 3px;">
+            <input type="button" id="btndownloadpdf" class="btn btn-info" value="Pobierz PDF" onclick="location.href='@Url.Action("CreatedPDF", "Pages")'" />
+        </div>
+        <div style="float: left;">
+            <input type="button" id="btndownloadexcel" class="btn btn-success" value="Pobierz Excel" onclick="location.href='@Url.Action("ExportToExcel", "Pages")'" />
+        </div>
+
+    </div>
+
+}
+
+@section scripts{
+
+    <script src="http://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+
+    <script>
+
+
+        /*
+         * Potwierdzanie usunięcia strony
+         * */
+        $(function () {
+
+            $("a.delete").click(function () {
+                if (!confirm("Potwierdzasz usuniecię strony")) return false;
+            });
+
+        });
+
+
+        /*
+         * Sortowanie stron za pomocą Jquery UI
+         *
+         */
+        $(function () {
+
+            $("table#pages tbody").sortable({
+                items: "tr:not(.home)",
+                placeholder: "ui-state-highlight",
+                update: function () {
+                    var ids = $("table#pages tbody").sortable("serialize");
+                    var url = "/Admin/Pages/ReorderPages";
+
+                    $.post(url, ids, function (data) {
+
+                    })
+                }
+            })
+
+        });
+
+        /*
+        * Powiadomienie o pobraniu pliku PDF
+        *
+        */
+        $(function () {
+            $("#btndownloadpdf").click(function () {
+                $("div #pdfdownload").show("fast");
+                setTimeout(function () {
+                    $("div #pdfdownload").hide("slow");
+                }, 2000);
+            });
+        });
+
+
+        /*
+         * Powiadomienie o pobraniu pliku excel
+         *
+         */
+        $(function () {
+            $("#btndownloadexcel").click(function () {
+                $("div #exceldownload").show("fast");
+                setTimeout(function () {
+                    $("div #exceldownload").hide("slow");
+                }, 2000);
+            });
+        });
+
+    </script>
+}
+

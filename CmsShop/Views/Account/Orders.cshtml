@@ -1,0 +1,56 @@
+﻿@model IEnumerable<CmsShop.Models.ViewsModels.Account.OrdersForUserVM>
+
+@{
+    /**/
+
+    ViewBag.Title = "Zamówienia";
+}
+
+<h2>Zamówienia</h2>
+@if (!Model.Any())
+{
+    <h3 class="text-center">Nie ma żadnych zamówień.</h3>
+}
+else
+{
+
+
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.OrderNumber)
+            </th>
+            <th>
+                Szczegóły zamówienia
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Total)
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OrderNumber)
+                </td>
+                <td>
+                    @foreach (var item2 in item.ProductsAndQuantity)
+                    {
+                        @item2.Key @:x @item2.Value <br/>
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedAt)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Total)
+                </td>
+            </tr>
+        }
+
+    </table>
+}

@@ -1,0 +1,12 @@
+﻿@model IEnumerable<CmsShop.Models.ViewsModels.Shop.CategoryVM>
+
+<h3>Kategorie</h3>
+
+<ul style="padding:0">
+    @foreach (var item in Model)
+    {
+
+      <a class="list-group-item list-group-item-action textContent" href="/Shop/Category/@item.Slug.ToLower()">@item.Name</a>
+
+    }
+</ul>

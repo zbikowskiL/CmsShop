@@ -1,0 +1,109 @@
+﻿@model IEnumerable<CmsShop.Areas.Admin.Models.ViewModels.Shop.OrdersForAdminVM>
+
+@{
+    ViewBag.Title = "Zamówienia";
+}
+
+<h2>Zamówienia</h2>
+
+<div class="alert alert-success" style="display: none;" id="pdfdownload">
+    <p>Pobrano plik Zamówienia.pdf!</p>
+</div>
+<div class="alert alert-success" style="display: none;" id="exceldownload">
+    <p>Pobrano plik Zamówienia.xlsx!</p>
+</div>
+
+
+@if (!Model.Any())
+{
+    <h3 class="text-center">Nie ma żadnych zamówień.</h3>
+}
+else
+{
+
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.OrderNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Username)
+            </th>
+            <th>
+                Szczegóły zamówienia
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreatedAt)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Total)
+            </th>
+
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OrderNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Username)
+                </td>
+                <td>
+                    @foreach (var item2 in item.ProductsAndQuantity)
+                    {
+                        @item2.Key @:x @item2.Value <br />
+                    }
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedAt)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Total)
+                </td>
+            </tr>
+        }
+
+    </table>
+
+    <div class="btn-group" style="display: inline-block;">
+        <div style="float: left;  margin-right: 3px;">
+            <input type="button" id="btndownloadpdf" class="btn btn-info" value="Pobierz PDF" onclick="location.href='@Url.Action("CreatedPDF", "Shop")'" />
+        </div>
+        <div style="float: left;">
+            <input type="button" id="btndownloadexcel" class="btn btn-success" value="Pobierz Excel" onclick="location.href='@Url.Action("ExportToExcel", "Shop")'" />
+        </div>
+    </div>
+
+}
+@section scripts{
+    <script src="http://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+
+    <script>
+
+        $(function () {
+            $("#btndownloadpdf").click(function () {
+                $("div #pdfdownload").show("fast");
+                setTimeout(function () {
+                    $("div #pdfdownload").hide("slow");
+                }, 2000);
+            });
+        });
+
+        /*
+         * Powiadomienie o pobraniu pliku excel
+         *
+         */
+        $(function () {
+            $("#btndownloadexcel").click(function () {
+                $("div #exceldownload").show("fast");
+                setTimeout(function () {
+                    $("div #exceldownload").hide("slow");
+                }, 2000);
+            });
+        });
+
+    </script>
+
+}
